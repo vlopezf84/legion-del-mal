@@ -1,4 +1,11 @@
-USE msdb;
+USE [NombreBaseDatos];
+GO
+
+DROP PROCEDURE IF EXISTS dbo.SP_ARCHIVA_TBL_SENTINEL_INTERCAMBIO;
+GO
+
+PRINT 'Procedimiento eliminado correctamente.';
+GOUSE msdb;
 GO
 
 IF EXISTS
