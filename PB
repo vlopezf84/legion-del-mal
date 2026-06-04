@@ -1,18 +1,18 @@
 USE [NombreBaseDatos];
 GO
 
-IF OBJECT_ID('dbo.SP_ARCHIVA_TBL_SENTINEL_INTERCAMBIO','P') IS NOT NULL
+IF OBJECT_ID('dbo.TBL_SENTINEL_INTERCAMBIO_HST','U') IS NOT NULL
 BEGIN
 
-    DROP PROCEDURE dbo.SP_ARCHIVA_TBL_SENTINEL_INTERCAMBIO;
+    DROP TABLE dbo.TBL_SENTINEL_INTERCAMBIO_HST;
 
-    PRINT 'Procedimiento eliminado correctamente.';
+    PRINT 'Tabla histórica eliminada correctamente.';
 
 END
 ELSE
 BEGIN
 
-    PRINT 'El procedimiento no existe.';
+    PRINT 'La tabla histórica no existe.';
 
 END
 GO
