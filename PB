@@ -1,75 +1,24 @@
-Orden	Actividad	Detalle
-1	Respaldo de objetos de base de datos	Servidor: MXDF01DBS007
+USE msdb;
+GO
 
-Realizar respaldo de los objetos relacionados con el cambio:
-• Tabla dbo.TBL_SENTINEL_INTERCAMBIO.
-• Procedimientos almacenados relacionados, en caso de existir dependencias.
+IF EXISTS
+(
+    SELECT 1
+    FROM dbo.sysjobs
+    WHERE name = N'JOB_ARCHIVA_TBL_SENTINEL_INTERCAMBIO'
+)
+BEGIN
 
-Validar que exista respaldo reciente de la base de datos previo a la ejecución del cambio.
-2	Creación de tabla histórica	Servidor: MXDF01DBS007
+    EXEC dbo.sp_delete_job
+        @job_name = N'JOB_ARCHIVA_TBL_SENTINEL_INTERCAMBIO';
 
-Ejecutar el script:
-C - Tabla Nueva.sql
+    PRINT 'Job JOB_ARCHIVA_TBL_SENTINEL_INTERCAMBIO eliminado correctamente.';
 
-Este script crea la tabla histórica dbo.TBL_SENTINEL_INTERCAMBIO_HST, la cual almacenará los registros archivados de la tabla operativa dbo.TBL_SENTINEL_INTERCAMBIO.
+END
+ELSE
+BEGIN
 
-Validar que la tabla haya sido creada correctamente y que su estructura corresponda a la definida en el requerimiento.
-3	Implementación de procedimiento almacenado	Servidor: MXDF01DBS007
+    PRINT 'El Job JOB_ARCHIVA_TBL_SENTINEL_INTERCAMBIO no existe.';
 
-Ejecutar el script:
-C - SP Limpieza.sql
-
-Este script crea el procedimiento almacenado encargado de:
-1. Copiar los registros de dbo.TBL_SENTINEL_INTERCAMBIO hacia dbo.TBL_SENTINEL_INTERCAMBIO_HST.
-2. Eliminar los registros de la tabla operativa una vez concluida la copia.
-3. Ejecutar las operaciones dentro de una transacción para garantizar la integridad de la información.
-4	Validación de procedimiento almacenado	Servidor: MXDF01DBS007
-
-Validar la creación correcta del procedimiento almacenado.
-
-Confirmar que el objeto exista en la base de datos y que compile sin errores.
-
-No ejecutar el procedimiento manualmente salvo que exista autorización expresa dentro de la ventana de cambio.
-5	Creación de Job SQL Server Agent	Servidor: MXDF01DBS007
-
-Ejecutar el script:
-C - Job.sql
-
-Este script crea el Job JOB_ARCHIVA_TBL_SENTINEL_INTERCAMBIO, así como su programación diaria a las 23:00 horas para ejecutar el procedimiento almacenado de archivado.
-6	Validación del Job	Servidor: MXDF01DBS007
-
-Verificar que el Job haya sido creado correctamente en SQL Server Agent.
-
-Validar:
-• Nombre del Job.
-• Estado habilitado.
-• Paso configurado para ejecutar el procedimiento almacenado.
-• Programación diaria a las 23:00 horas.
-• Asociación correcta al servidor.
-7	Cierre de implementación	Servidor: MXDF01DBS007
-
-Documentar la ejecución exitosa del cambio.
-
-Confirmar que:
-• La tabla histórica fue creada correctamente.
-• El procedimiento almacenado fue implementado correctamente.
-• El Job quedó habilitado y programado.
-
-Registrar evidencia de la implementación conforme al proceso de control de cambios.
-Plan de reversa (Rollback)
-Orden	Actividad	Detalle
-1	Deshabilitar Job	Servidor: MXDF01DBS007
-
-Deshabilitar el Job JOB_ARCHIVA_TBL_SENTINEL_INTERCAMBIO para evitar futuras ejecuciones automáticas.
-2	Eliminar Job	Servidor: MXDF01DBS007
-
-Eliminar el Job creado durante la implementación.
-3	Eliminar procedimiento almacenado	Servidor: MXDF01DBS007
-
-Eliminar el procedimiento almacenado creado mediante el script C - SP Limpieza.sql.
-4	Eliminar tabla histórica	Servidor: MXDF01DBS007
-
-Eliminar la tabla dbo.TBL_SENTINEL_INTERCAMBIO_HST creada durante la implementación, previa validación de que no contenga información requerida para auditoría o análisis.
-5	Validación de reversa	Servidor: MXDF01DBS007
-
-Confirmar que no existan objetos remanentes asociados al cambio y documentar la ejecución del rollback.
+END
+GO
