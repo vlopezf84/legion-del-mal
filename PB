@@ -1,31 +1,18 @@
 USE [NombreBaseDatos];
 GO
 
-DROP PROCEDURE IF EXISTS dbo.SP_ARCHIVA_TBL_SENTINEL_INTERCAMBIO;
-GO
-
-PRINT 'Procedimiento eliminado correctamente.';
-GOUSE msdb;
-GO
-
-IF EXISTS
-(
-    SELECT 1
-    FROM dbo.sysjobs
-    WHERE name = N'JOB_ARCHIVA_TBL_SENTINEL_INTERCAMBIO'
-)
+IF OBJECT_ID('dbo.SP_ARCHIVA_TBL_SENTINEL_INTERCAMBIO','P') IS NOT NULL
 BEGIN
 
-    EXEC dbo.sp_delete_job
-        @job_name = N'JOB_ARCHIVA_TBL_SENTINEL_INTERCAMBIO';
+    DROP PROCEDURE dbo.SP_ARCHIVA_TBL_SENTINEL_INTERCAMBIO;
 
-    PRINT 'Job JOB_ARCHIVA_TBL_SENTINEL_INTERCAMBIO eliminado correctamente.';
+    PRINT 'Procedimiento eliminado correctamente.';
 
 END
 ELSE
 BEGIN
 
-    PRINT 'El Job JOB_ARCHIVA_TBL_SENTINEL_INTERCAMBIO no existe.';
+    PRINT 'El procedimiento no existe.';
 
 END
 GO
